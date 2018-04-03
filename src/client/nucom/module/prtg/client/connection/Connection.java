@@ -37,7 +37,7 @@ public class Connection
 		this.Port=Port;
 		if(Password.isEmpty())
 		{
-			this.Password = null;
+			this.Password = "";
 		}
 		else
 		{
@@ -50,6 +50,8 @@ public class Connection
 	{
 		SSLSocketFactory  SocketFactory = null;
 		
+		//When TrustallCA is true, create a trustmanager, to trust all ca's
+		//Note to self: HIGHLY DISCOURAGED! Only use for debugging purpose
 		if(EntryPoint.CM.B(Config.TrustallCA))
 		{
 			SSLContext SC = null; 
@@ -61,27 +63,31 @@ public class Connection
 			{
 				l.log("Context generation Failed");
 				l.log(e);
+				return;
 			}
 			
 			try 
 			{
-				SC.init(null , trustAllCerts , new SecureRandom());
+				SC.init(null , trustAllCA , new SecureRandom());
 			}
 			catch (KeyManagementException e) 
 			{
 				l.log("SSL Context generation error");
 				l.log(e);
+				return;
 			}
 			
 			SocketFactory = SC.getSocketFactory(); //(SSLSocketFactory)SSLSocketFactory.getDefault();
 		}
 		else
 		{
+			//Create a system default socket factory
 			SocketFactory = (SSLSocketFactory)SSLSocketFactory.getDefault();
 		}
 		
 		try 
 		{
+			//Open connection to server
 			S = (SSLSocket)SocketFactory.createSocket(IPorDNS, Port);
 						
 			BIS = new BufferedReader(new InputStreamReader(S.getInputStream()));
@@ -95,11 +101,19 @@ public class Connection
 			
 			l.log("Writing Password");
 			
+			//After the Handshake, write out the password as plaintext
+			
+			// TODO: Encrypt Password 
+			
 			Out.write(Password.getBytes());
 			Out.write(System.lineSeparator().getBytes());
 
+			
+			//Waiting for a response, the server will return a response in both cases, wherever login was sucessful or not.
+			
 			String Line ="";
 			Line = BIS.readLine();
+			//Log XML in the Logfile, and in the console, for the PRTG-Monitor to read.
 			l.log(Line);
 			
 			System.out.println(Line);
@@ -108,11 +122,13 @@ public class Connection
 		} 
 		catch (UnknownHostException e) 
 		{
+			//If host is unknown, log it
 			l.log("Connection Failed.");
 			l.log(e);
 		} 
 		catch (IOException e) 
 		{
+			//If anything goes wrong, log it
 			l.log("Connection Failed.");
 			l.log(e);
 		}
@@ -121,10 +137,25 @@ public class Connection
 	
 	private void Close()
 	{
+		//Close Streams individually, and log any exceptions
 		try
 		{
 			Out.close();
+		}
+		catch(Exception e)
+		{
+			l.log(e);
+		}
+		try
+		{
 			BIS.close();
+		}
+		catch(Exception e)
+		{
+			l.log(e);
+		}
+		try
+		{
 			S.close();
 		}
 		catch(Exception e)
@@ -133,9 +164,9 @@ public class Connection
 		}
 	}
 	
-	private static final TrustManager[] trustAllCerts = new TrustManager[] 
+	private static final TrustManager[] trustAllCA = new TrustManager[] 
 	{
-			//TMF =  TrustManagerFactory.getInstance("SunX509");
+			//Define a trustamanager, whcih trusts every cert
 			new X509TrustManager()
 			{
 				@Override

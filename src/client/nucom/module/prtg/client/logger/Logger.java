@@ -18,16 +18,19 @@ public class Logger
 	
 	public Logger(String Name, String LogLocation)
 	{
+		//Creating a new instance of the logger
 
-		this.Name=Name;
-				
-		LogFile = new File (LogLocation+Name+".log");
-
+		//If no Loglocation was Supplied, don't log
 		if(LogLocation.isEmpty())
 		{
 			Log = false;
 			return;
 		}
+		
+		this.Name=Name;
+		
+		//Try to create a logfile at the given location
+		LogFile = new File (LogLocation+Name+".log");
 		
 		try 
 		{
@@ -35,7 +38,11 @@ public class Logger
 		} 
 		catch (IOException e) 
 		{
+			//If something goes wrong, print the stacktrace, and disable further logging attempts for logger
+			
+			//Note: This output will cause a malformed XML exception in prtg monitor
 			e.printStackTrace();
+			Log=false;
 		}
 	}
 	
@@ -51,12 +58,14 @@ public class Logger
 		} 
 		catch (Exception e) 
 		{
+			//Note: This output will cause a malformed XML exception in prtg monitor
 			e.printStackTrace();
 		}
 	}
 	
 	public void log(Exception e)
 	{
+		//Exception to String for the Logger
 		if(!Log) {return;}
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
