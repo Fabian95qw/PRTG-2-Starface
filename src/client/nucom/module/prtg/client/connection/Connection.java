@@ -10,7 +10,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -35,15 +41,16 @@ public class Connection
 	{
 		this.IPorDNS=IPorDNS;
 		this.Port=Port;
+		l = new Logger("Connection", EntryPoint.CM.S(Config.LogLocation));
 		if(Password.isEmpty())
 		{
 			this.Password = "";
 		}
 		else
 		{
-			this.Password=Password;
+			this.Password=Encrypt(Password);
 		}
-		l = new Logger("Connection", EntryPoint.CM.S(Config.LogLocation));
+
 	}
 	
 	public void Open()
@@ -190,5 +197,39 @@ public class Connection
 			}
 			
 	};
+	
+	private String Encrypt(String Password)
+	{
+		//Thank you https://stackoverflow.com/questions/2860943/how-can-i-hash-a-password-in-java
+		byte[] Salt = "*Starface*".getBytes();
+		byte[] Passwordhash = null;
+		KeySpec KS = new PBEKeySpec(Password.toCharArray(), Salt, 65536, 128);
+		SecretKeyFactory SKF = null;
+		Encoder ENC = Base64.getEncoder();		
+		
+		l.log("Encrypting Password");
+		
+		try 
+		{
+			SKF = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		} 
+		catch (NoSuchAlgorithmException e) 
+		{
+			l.log(e);
+			return null;
+		}
+		
+		try 
+		{
+			Passwordhash = SKF.generateSecret(KS).getEncoded();
+		}
+		catch (InvalidKeySpecException e) 
+		{
+			l.log(e);
+			return null;
+		}
+		
+		return ENC.encodeToString(Passwordhash);
+	}
 		
 }
