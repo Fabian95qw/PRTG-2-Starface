@@ -12,7 +12,7 @@ import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.OutputVar;
 
-@Function(visibility=Visibility.Private, rookieFunction=false, description="Returns Monitoring Output, as a Map")
+@Function(visibility=Visibility.Private, rookieFunction=false, description="Returns Monitoring Output")
 public class MonitoringOutput implements IBaseExecutable 
 {
 	//##########################################################################################
