@@ -4,7 +4,7 @@
 
 * Place the Starface.bat and the PRTGClient.jar inside of the "Custom Sensors\EXEXML" (Defaulf path: "C:\Program Files (x86)\PRTG Network Monitor\Custom Sensors\EXEXML")
 
-*Requires Java to work
+* Requires Java to work
 
 The parameters for the .bat are as follows: %host [PORT] [PASSWORT] [TRUSTALLCA] [LOGLOCATION]
 
