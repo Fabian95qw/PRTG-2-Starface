@@ -28,6 +28,8 @@ public class XMLConstructor
 	private List<Result> Results = null;
 	private Log log = null;
 	
+	private boolean inUse = false; //Boolean to Stop ConcurrentModificationException.
+	
 	public XMLConstructor(Log log)
 	{
 		this.log=log;
@@ -36,6 +38,18 @@ public class XMLConstructor
 	
 	public void AddResult(String Channel, String Value, Unit U, String CustomUnit, Map<String, String> Params)
 	{
+		while(inUse) //While XML is Constructed, wait with modifying values
+		{
+			try 
+			{
+				Thread.sleep(1000);
+			} 
+			catch (InterruptedException e) 
+			{
+				LogHelper.EtoStringLog(log, e);
+			}
+		}
+		
 		//Checks if the Same Channel is already existing, overrides variables if so, otherwise adds the Result
 		for(Result R : Results)
 		{
@@ -55,6 +69,7 @@ public class XMLConstructor
 	@Override
 	public String toString()
 	{
+		inUse = true;
 		//Parsing the XML-Construct to a PRTG-Monitor friendly xml
 		DocumentBuilderFactory DBF = null;
 		DocumentBuilder DB = null;
@@ -121,13 +136,16 @@ public class XMLConstructor
 			StringWriter SW = new StringWriter();
 			T.transform(new DOMSource(D), new StreamResult(SW));
 			log.debug("[XMLC] XML Constructed:" + SW.getBuffer().toString());
+			inUse = false;
 			return SW.getBuffer().toString();
+			
 		}
 		catch(Exception e)
 		{
 			LogHelper.EtoStringLog(log, e);
 		}
 		//If an error occures, return an empty String, causing an XML Malformed exception in the prtg-monitor
+		inUse = false;
 		return "";
 	}
 		
