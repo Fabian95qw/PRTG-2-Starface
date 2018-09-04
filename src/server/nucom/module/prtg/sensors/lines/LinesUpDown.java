@@ -33,6 +33,11 @@ public class LinesUpDown implements IBaseExecutable
 
 		List<String> Lines = CA.sipShowRegistry();
 		
+		if(Lines.size() == 0)
+		{
+			return;
+		}
+		
 		Lines.remove(0);
 		Lines.remove(Lines.size()-1);
 		
