@@ -29,6 +29,10 @@ public class GetPackage implements IBaseExecutable
 		if(Package == null)
 		{
 			context.getLog().debug("PRTG Monitor did not Return a Package, is the Core Service running?");
+			if(Storage.CL != null && Storage.CL.isRunning())
+			{
+				Storage.CL.shutdown(); //If the Core Service for some reason breaks, shut it down, so it can be rebooted.
+			}
 		}
 	}//END OF EXECUTION
 
