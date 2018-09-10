@@ -56,7 +56,7 @@ public class StartPRTGListener implements IBaseExecutable
 			}
 		}
 		
-		if(SM.getComponentProvider() == null || !SM.getConnectionListener().isRunning() )
+		if(SM.getConnectionListener() == null || !SM.getConnectionListener().isRunning() )
 		{
 			//Creating a New Listener
 			log.debug("Trying to Start the PRTG Listener");
