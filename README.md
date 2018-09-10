@@ -6,10 +6,11 @@
 
 * Requires Java to work
 
-The parameters for the .bat are as follows: %host [PORT] [PASSWORT] [TRUSTALLCA] [LOGLOCATION]
+The parameters for the .bat are as follows: %host [PORT] [PASSWORT] [SENSORNAME] [TRUSTALLCA] [LOGLOCATION]
 
 * %host ==> Is a Param of the prtg-monitor. It's the IP/DNS entry of the host, of this sensor.
 * PORT ==> The listener port on the starface pbx
+* SENSORNAME ==> The name of the Sensor given in the Module-Add On. You can merge multiple Add-Ons/Channels into one Sensor.
 * TRUSTALLCA ==> a Boolean to Trust all CA's, is required if the pbx doesn't have a valid certificate
 * LOGLOCATION ==> The loglocation of the simply written logger. can be null
 
