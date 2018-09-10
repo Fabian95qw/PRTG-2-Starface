@@ -10,8 +10,8 @@ import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.InputVar;
 import nucom.module.prtg.server.listener.ConnectionListener;
-import nucom.module.prtg.server.utility.Storage;
-import nucom.module.prtg.server.xml.XMLConstructor;
+import nucom.module.prtg.server.manager.StorageManager;
+import nucom.module.prtg.server.utility.LogHelper;
 
 @Function(visibility=Visibility.Private, rookieFunction=false, description="Starting a PRTG Listener, will do nothing if Port is already open.")
 public class StartPRTGListener implements IBaseExecutable 
@@ -41,20 +41,30 @@ public class StartPRTGListener implements IBaseExecutable
 		
 		//Checking if there is already a Connection Listener existing, and still active
 		
-		if(Storage.CL == null || !Storage.CL.isRunning() )
+		StorageManager SM = (StorageManager)context.provider().fetch(StorageManager.class);
+		
+		if(!SM.isRunning())
+		{
+			log.debug("Starting StorageManager");
+			try 
+			{
+				SM.startComponent();
+			} 
+			catch (Throwable e) 
+			{
+				LogHelper.EtoStringLog(log, e);
+			}
+		}
+		
+		if(SM.getComponentProvider() == null || !SM.getConnectionListener().isRunning() )
 		{
 			//Creating a New Listener
 			log.debug("Trying to Start the PRTG Listener");
 			ConnectionListener CL = new ConnectionListener(Port, Password, KeyStoreLocation, KeyStorePassword, context);
-			Storage.CL = CL;
+			SM.setConnectionListener(CL);
 			//Starting a new Thread for the Listener
 			Thread T = new Thread(CL);
-			T.start();
-			
-			//Creating the XML-Constructor Object, and then storing it
-			XMLConstructor XMLC = new XMLConstructor(context.getLog());
-			Storage.XMLC=XMLC;
-			
+			T.start();			
 		}
 		else
 		{

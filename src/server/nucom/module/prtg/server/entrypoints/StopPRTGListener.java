@@ -7,7 +7,7 @@ import de.vertico.starface.module.core.model.Visibility;
 import de.vertico.starface.module.core.runtime.IBaseExecutable;
 import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
-import nucom.module.prtg.server.utility.Storage;
+import nucom.module.prtg.server.manager.StorageManager;
 
 @Function(visibility=Visibility.Private, rookieFunction=false, description="Stops the PRTG Listener.")
 public class StopPRTGListener implements IBaseExecutable 
@@ -23,13 +23,13 @@ public class StopPRTGListener implements IBaseExecutable
 	{
 		Log log = context.getLog();
 				
-		if(Storage.CL != null && Storage.CL.isRunning() )
+		StorageManager SM = (StorageManager)context.provider().fetch(StorageManager.class);
+		
+		if(SM.isRunning())
 		{
-			log.debug("Stopping Connection Listener");
-			Storage.CL.shutdown();
+			log.debug("Shutting down StorageManager");
+			SM.shutdown();
 		}
-
-		Storage.XMLC = null;
 	}//END OF EXECUTION
 
 	
