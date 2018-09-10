@@ -61,6 +61,7 @@ public class StorageManager extends StarfaceComponent
 	
 	public XMLConstructor getPackage(String Sensor)
 	{
+		if(!isRunning) {return null;}
 		if(Sensor == null || Sensor.isEmpty()) 
 		{
 			Sublog.debug("Sensorname is null!");

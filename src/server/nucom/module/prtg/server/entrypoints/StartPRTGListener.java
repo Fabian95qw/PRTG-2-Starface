@@ -49,6 +49,7 @@ public class StartPRTGListener implements IBaseExecutable
 			try 
 			{
 				SM.startComponent();
+				SM.updateContext(context);
 			} 
 			catch (Throwable e) 
 			{
