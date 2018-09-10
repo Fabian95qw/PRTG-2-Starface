@@ -21,3 +21,5 @@ The parameters for the .bat are as follows: %host [PORT] [PASSWORT] [TRUSTALLCA]
 
 * iptables -I INPUT 3 -p tcp -m tcp --dport [PORT] -j ACCEPT
 * service iptables save
+
+* Install Add-On Modules, or create your own. (For examples see: https://github.com/Fabian95qw/PRTG-2-Starface/tree/master/bin/server)
