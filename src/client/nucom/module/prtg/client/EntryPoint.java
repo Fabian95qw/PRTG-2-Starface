@@ -54,7 +54,7 @@ NNNNNNNN         NNNNNNN    uuuuuuuu  uuuu    cccccccccccccccc   ooooooooooo   m
 		l.log("Opeing Connection to: " + CM.S(Config.IPorDNS) +" on Port: " + CM.I(Config.Port));
 		
 		//Creating the Connection and open it.
-		Connection C = new Connection(CM.S(Config.IPorDNS), CM.I(Config.Port), CM.S(Config.Password));
+		Connection C = new Connection(CM.S(Config.IPorDNS), CM.I(Config.Port), CM.S(Config.Password), CM.S(Config.Sensor));
 		C.Open();
 	}
 	
@@ -64,17 +64,19 @@ NNNNNNNN         NNNNNNN    uuuuuuuu  uuuu    cccccccccccccccc   ooooooooooo   m
 		String IPorDNS = args[0];
 		String Port = args[1];
 		String Password = args[2];
-		String TrustallCA = args[3];		
+		String Sensor = args[3];
+		String TrustallCA = args[4];		
 		String Loglocation = "";
 		
-		if(args.length >=5)
+		if(args.length >=6)
 		{
-			Loglocation = args[4];
+			Loglocation = args[5];
 		}
 				
 		CM.put(Config.IPorDNS, IPorDNS);
 		CM.put(Config.Port, Port);
 		CM.put(Config.Password, Password);
+		CM.put(Config.Sensor, Sensor);
 		CM.put(Config.LogLocation, Loglocation);
 		CM.put(Config.TrustallCA, TrustallCA);
 		

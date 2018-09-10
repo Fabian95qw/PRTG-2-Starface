@@ -35,12 +35,14 @@ public class Connection
 	private BufferedReader BIS = null;
 	private OutputStream Out = null;
 	private String Password = null;
+	private String Sensor =null;
 	private Logger l =null;
 	
-	public Connection(String IPorDNS, Integer Port, String Password)
+	public Connection(String IPorDNS, Integer Port, String Password, String Sensor)
 	{
 		this.IPorDNS=IPorDNS;
 		this.Port=Port;
+		this.Sensor=Sensor;
 		l = new Logger("Connection", EntryPoint.CM.S(Config.LogLocation));
 		if(Password.isEmpty())
 		{
@@ -84,7 +86,7 @@ public class Connection
 				return;
 			}
 			
-			SocketFactory = SC.getSocketFactory(); //(SSLSocketFactory)SSLSocketFactory.getDefault();
+			SocketFactory = SC.getSocketFactory();
 		}
 		else
 		{
@@ -108,13 +110,13 @@ public class Connection
 			
 			l.log("Writing Password");
 			
-			//After the Handshake, write out the password as plaintext
-			
-			// TODO: Encrypt Password 
-			
+			//After the Handshake, write out the encrypted password
+						
 			Out.write(Password.getBytes());
 			Out.write(System.lineSeparator().getBytes());
 
+			Out.write(Sensor.getBytes());
+			Out.write(System.lineSeparator().getBytes());
 			
 			//Waiting for a response, the server will return a response in both cases, wherever login was sucessful or not.
 			
