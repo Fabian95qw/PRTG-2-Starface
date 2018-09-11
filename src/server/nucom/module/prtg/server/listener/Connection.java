@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 
 import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import nucom.module.prtg.server.utility.LogHelper;
-import nucom.module.prtg.server.utility.Storage;
+import nucom.module.prtg.server.manager.StorageManager;
 import nucom.module.prtg.server.utility.EnumHelper.Unit;
 import nucom.module.prtg.server.xml.XMLConstructor;
 
@@ -22,13 +22,14 @@ public class Connection implements Runnable
 	private SSLSocket S = null;
 	private String Password =null;
 	private Log log = null;
-
+	private StorageManager SM = null;
+	
 	public Connection(SSLSocket S, String Password,  IRuntimeEnvironment context)
 	{
 		this.Password=Password;
 		this.log=context.getLog();
 		this.S=S;
-
+		SM = (StorageManager)context.provider().fetch(StorageManager.class);
 	}
 
 	@Override
@@ -61,8 +62,10 @@ public class Connection implements Runnable
 			//Check if Password is correct
 			if(Line.equals(Password))
 			{
+				String Sensor = BIS.readLine();
+				XMLConstructor Package = SM.getPackage(Sensor);
 				log.debug("[C] Client login was sucessful");
-				if(Storage.XMLC == null)
+				if(Package == null)
 				{
 					//If currently no valid package exists, return the default package with the login successful channel
 					XMLConstructor XMLC = new XMLConstructor(log);
@@ -73,8 +76,8 @@ public class Connection implements Runnable
 				else
 				{
 					//Add/Update the Login channel with a successful == 1
-					Storage.XMLC.AddResult("Login", "1", Unit.Custom, "Success", null);
-					Out.write(Storage.XMLC.toString().getBytes());
+					Package.AddResult("Login", "1", Unit.Custom, "Success", null);
+					Out.write(Package.toString().getBytes());
 				}
 			}
 			else
