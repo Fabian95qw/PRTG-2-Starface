@@ -41,7 +41,8 @@ public class LinesUpDown implements IBaseExecutable
 		
 		for(WireUnitBean Line: Lines)
 		{
-			log.debug("Line: " +Line.getDisplayName() +" ==> " +Line.getConnectionState());
+			log.debug("Line: " +Line.getWireName() +" ==> " +Line.getConnectionState());
+
 			if(Line.getConnectionState().equals("on"))
 			{
 				LinesUp++;
