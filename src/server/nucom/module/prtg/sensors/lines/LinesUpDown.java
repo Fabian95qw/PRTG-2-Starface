@@ -2,7 +2,7 @@ package nucom.module.prtg.sensors.lines;
 
 import java.util.Collection;
 
-import org.jfree.util.Log;
+import org.apache.commons.logging.Log;
 
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.config.wire.forms.WireUnitBean;
@@ -34,13 +34,14 @@ public class LinesUpDown implements IBaseExecutable
 	{
 		//CallActions CA = (CallActions)context.provider().fetch(CallActions.class);
 
+		Log log = context.getLog();
 		WireSettingsHandler WSH = (WireSettingsHandler)context.provider().fetch(WireSettingsHandler.class);
 		
 		Collection<WireUnitBean> Lines = WSH.getProviderConnections();
 		
 		for(WireUnitBean Line: Lines)
 		{
-			Log.debug("Line: " +Line.getDisplayName() +" ==> " +Line.getConnectionState());
+			log.debug("Line: " +Line.getDisplayName() +" ==> " +Line.getConnectionState());
 			if(Line.getConnectionState().equals("on"))
 			{
 				LinesUp++;
@@ -50,32 +51,6 @@ public class LinesUpDown implements IBaseExecutable
 				LinesDown++;
 			}
 		}
-		
-		/*
-		List<String> Lines = CA.sipShowRegistry();
-	
-			
-		if(Lines.size() == 0)
-		{
-			return;
-		}
-		
-		Lines.remove(0); //Remove Header
-		Lines.remove(Lines.size()-1); //Remove Footer
-		
-		for (String Line : Lines)
-		{
-			context.getLog().debug(Line);
-			if(Line.contains("Registered"))
-			{
-				LinesUp++;
-			}
-			else
-			{
-				LinesDown++;
-			}
-		}
-		*/
 				
 	}//END OF EXECUTION
 
