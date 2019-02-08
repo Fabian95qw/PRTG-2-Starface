@@ -38,7 +38,7 @@ NNNNNNNN         NNNNNNN    uuuuuuuu  uuuu    cccccccccccccccc   ooooooooooo   m
 	public static void main(String[] args) 
 	{
 		//Check if enough arguments are present
-		if(args.length < 4)
+		if(args.length < 5)
 		{
 			System.out.println("Not Enough arguments");
 			return;
@@ -49,7 +49,7 @@ NNNNNNNN         NNNNNNN    uuuuuuuu  uuuu    cccccccccccccccc   ooooooooooo   m
 		
 		parseArgs(args);
 
-		Logger l = new Logger("EntryPoint", CM.S(Config.LogLocation));
+		Logger l = new Logger("EntryPoint", CM.B(Config.Debug));
 								
 		l.log("Opeing Connection to: " + CM.S(Config.IPorDNS) +" on Port: " + CM.I(Config.Port));
 		
@@ -66,18 +66,18 @@ NNNNNNNN         NNNNNNN    uuuuuuuu  uuuu    cccccccccccccccc   ooooooooooo   m
 		String Password = args[2];
 		String Sensor = args[3];
 		String TrustallCA = args[4];		
-		String Loglocation = "";
+		String Debug = "false";
 		
 		if(args.length >=6)
 		{
-			Loglocation = args[5];
+			Debug = args[5];
 		}
 				
 		CM.put(Config.IPorDNS, IPorDNS);
 		CM.put(Config.Port, Port);
 		CM.put(Config.Password, Password);
 		CM.put(Config.Sensor, Sensor);
-		CM.put(Config.LogLocation, Loglocation);
+		CM.put(Config.Debug, Debug);
 		CM.put(Config.TrustallCA, TrustallCA);
 		
 	}

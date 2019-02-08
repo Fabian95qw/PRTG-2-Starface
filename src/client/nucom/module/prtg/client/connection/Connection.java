@@ -43,7 +43,7 @@ public class Connection
 		this.IPorDNS=IPorDNS;
 		this.Port=Port;
 		this.Sensor=Sensor;
-		l = new Logger("Connection", EntryPoint.CM.S(Config.LogLocation));
+		l = new Logger("Connection", EntryPoint.CM.B(Config.Debug));
 		if(Password.isEmpty())
 		{
 			this.Password = "";
@@ -115,10 +115,16 @@ public class Connection
 			Out.write(Password.getBytes());
 			Out.write(System.lineSeparator().getBytes());
 
+			l.log("Writing Sensor to Access");
+			
 			Out.write(Sensor.getBytes());
 			Out.write(System.lineSeparator().getBytes());
 			
+			l.log("Waiting for Server Response");
+			
 			//Waiting for a response, the server will return a response in both cases, wherever login was sucessful or not.
+			
+			Thread.sleep(1000);
 			
 			String Line ="";
 			Line = BIS.readLine();
@@ -140,7 +146,7 @@ public class Connection
 			//If anything goes wrong, log it
 			l.log("Connection Failed.");
 			l.log(e);
-		}
+		} catch (InterruptedException e) {}
 		Close();
 	}
 	

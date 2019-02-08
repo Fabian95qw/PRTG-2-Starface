@@ -10,7 +10,7 @@ public class EnumHelper
 		IPorDNS,
 		Port,
 		Sensor,
-		LogLocation,
+		Debug,
 		Password,
 		TrustallCA
 	}
