@@ -6,13 +6,13 @@
 
 * Requires Java to work
 
-The parameters for the .bat are as follows: %host [PORT] [PASSWORT] [SENSORNAME] [TRUSTALLCA] [LOGLOCATION]
+The parameters for the .bat are as follows: %host [PORT] [PASSWORT] [SENSORNAME] [TRUSTALLCA] [DEBUG]
 
 * %host ==> Is a Param of the prtg-monitor. It's the IP/DNS entry of the host, of this sensor.
 * PORT ==> The listener port on the starface pbx
 * SENSORNAME ==> The name of the Sensor given in the Module-Add On, and Sensor Configuration on the PRTG-Monitor Server. You can merge multiple Add-Ons/Channels into one Sensor by using the same Sensorname.
 * TRUSTALLCA ==> a Boolean to Trust all CA's, is required if the pbx doesn't have a valid certificate
-* LOGLOCATION ==> The loglocation of the simply written logger. can be null
+* DEBUG ==> a Boolean, which will output everything in the console. WARNING THIS WILL CAUSE A MALFORMED XML EXCEPTION IN THE PRTG MONITOR! DEBUG USE ONLY
 
 ## Installation Starface:
 
