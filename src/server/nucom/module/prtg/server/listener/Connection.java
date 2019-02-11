@@ -88,8 +88,15 @@ public class Connection implements Runnable
 				XMLC.AddResult("Login", "0", Unit.Custom , "Success", null);
 				Out.write(XMLC.toString().getBytes());
 			}
+			//Wait for respsonse from client
+			BIS.readLine();
 		}
 		catch(IOException e)
+		{
+			log.debug("[C] Error while exchanging PRTG XML");
+			LogHelper.EtoStringLog(log, e);
+		}
+		catch(Exception e)
 		{
 			log.debug("[C] Error while exchanging PRTG XML");
 			LogHelper.EtoStringLog(log, e);

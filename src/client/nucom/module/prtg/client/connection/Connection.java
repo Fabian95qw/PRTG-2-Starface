@@ -128,6 +128,10 @@ public class Connection
 			
 			String Line ="";
 			Line = BIS.readLine();
+			
+			//Write an empty line back, to inform the server about closing the connection
+			Out.write(System.lineSeparator().getBytes());
+			
 			//Log XML in the Logfile, and in the console, for the PRTG-Monitor to read.
 			l.log(Line);
 			
