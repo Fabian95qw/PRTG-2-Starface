@@ -71,6 +71,7 @@ public class Connection implements Runnable
 					XMLConstructor XMLC = new XMLConstructor(log);
 					XMLC.AddResult("Login", "1", Unit.Custom, "Success", null);
 					Out.write(XMLC.toString().getBytes());
+					Out.write(System.lineSeparator().getBytes());
 
 				}
 				else
@@ -78,6 +79,7 @@ public class Connection implements Runnable
 					//Add/Update the Login channel with a successful == 1
 					Package.AddResult("Login", "1", Unit.Custom, "Success", null);
 					Out.write(Package.toString().getBytes());
+					Out.write(System.lineSeparator().getBytes());
 				}
 			}
 			else
@@ -87,7 +89,9 @@ public class Connection implements Runnable
 				XMLConstructor XMLC = new XMLConstructor(log);
 				XMLC.AddResult("Login", "0", Unit.Custom , "Success", null);
 				Out.write(XMLC.toString().getBytes());
+				Out.write(System.lineSeparator().getBytes());
 			}
+			log.debug("[C] Waiting before closing...");
 			//Wait for respsonse from client
 			BIS.readLine();
 		}
