@@ -23,8 +23,8 @@ public class XmlRpcConnector
 	public XmlRpcConnector(String Instancename, String IPorDNS, String Token) throws MalformedURLException
 	{
 		log=new Log(this.getClass());
-		String Url = "http://"+IPorDNS+"/xml-rpc";
-		
+		String Url ="http://"+IPorDNS+"/xml-rpc";
+
 		this.Instancename=Instancename;
 		Config = new XmlRpcClientConfigImpl();
 		
@@ -50,8 +50,6 @@ public class XmlRpcConnector
 		
 	private Result execute(Map<String, Object> Params) throws XmlRpcException
 	{
-		//System.out.println(Instancename);
-		//System.out.println(Params.toString());
 		log.debug("Executing Command...");
 		return Result.fromObject(XPC.execute(Instancename+"."+"interface", new Object[] {Params} ));
 	}

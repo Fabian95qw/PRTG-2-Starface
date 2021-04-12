@@ -5,9 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcStreamTransport;
@@ -22,8 +19,7 @@ import org.xml.sax.SAXException;
  */
 public class MessageLoggingTransport extends XmlRpcSunHttpTransport
 {
-    private static final Logger log = Logger.getLogger(MessageLoggingTransport.class.getName());
-
+    private Log log = null;
 
     /**
      * Default constructor
@@ -34,6 +30,7 @@ public class MessageLoggingTransport extends XmlRpcSunHttpTransport
     public MessageLoggingTransport(final XmlRpcClient pClient)
     {
         super(pClient);
+        log = new Log(this.getClass());
     }
 
 
@@ -45,7 +42,7 @@ public class MessageLoggingTransport extends XmlRpcSunHttpTransport
     {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         pWriter.write(baos);
-        //log.info(baos.toString());
+        log.debug(baos.toString());
         super.writeRequest(pWriter);
     }
 
@@ -70,10 +67,10 @@ public class MessageLoggingTransport extends XmlRpcSunHttpTransport
         }
         catch(final IOException e)
         {
-           log.log(Level.SEVERE, "While reading server response", e);
+           log.debug("Error While reading server response" + e);
         }
 
-        // log.info(sb.toString());
+        log.debug(sb.toString());
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(sb.toString().getBytes());
         return super.readResponse(pConfig, bais);

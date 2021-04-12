@@ -32,7 +32,7 @@ public class CommandLineRunner
 		O.addRequiredOption("s","sensorname", true, "Sensorname");
 		O.addRequiredOption("i","instancename", true, "Instancename");
 		O.addRequiredOption("d","debug", true, "Disable Debugging");
-
+		
 		CommandLineParser CMP = new DefaultParser();
 		CommandLine CMD =null;
 		try 
@@ -72,7 +72,7 @@ public class CommandLineRunner
 			}
 		}
 		
-		
+
 		log = new Log(this.getClass());
 		log.debug("Initialized CommandLineRunner");
 		log.debug("Arguments:");
@@ -85,7 +85,7 @@ public class CommandLineRunner
 		log.debug("Host: " + Host);
 		log.debug("Token:" + Token);
 		log.debug("Sensorname:"+  Sensorname);
-		
+				
 		try
 		{
 			XmlRpcConnector XMLRPC = new XmlRpcConnector(Instancename, Host, Token);

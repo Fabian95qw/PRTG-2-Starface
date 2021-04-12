@@ -15,8 +15,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
-import nucom.module.prtg.client.config.ConnectionData;
 import nucom.module.prtg.client.utility.EnumHelper;
 import nucom.module.prtg.client.utility.Log;
 import nucom.module.prtg.client.utility.LogHelper;
@@ -27,7 +25,6 @@ public class GUIController
 {	
 	
 	private Log log = null;
-	private Stage SG = null;
 	
 	@FXML ImageView IMAGEVIEW_TESTSTATE;
 	@FXML TextField TEXTFIELD_IPORDNS;
@@ -39,7 +36,7 @@ public class GUIController
 	@FXML TextField TEXTFIELD_SFVERSION;
 	@FXML TextField TEXTFIELD_SENSORSTRING;
 	@FXML TextField TEXTFIELD_SENSORNAME;
-	
+
 	public GUIController()
 	{}
 
@@ -48,11 +45,8 @@ public class GUIController
 	{		
 		log = new Log(this.getClass());
 		log.debug("Initialized AddServerFormController");
-		
 		Error();
 	}
-			
-
 	
     @FXML
     private void COPY_SENSORSTRING_ACTION(ActionEvent event)
@@ -68,7 +62,7 @@ public class GUIController
     	log.debug("TEST_CONNECTION_ACTION");
     	CalculateToken();
     	Trying();
-		
+    	
 		try 
 		{
 			XmlRpcConnector XPC = new XmlRpcConnector(TEXTFIELD_INSTANCENAME.getText(), TEXTFIELD_IPORDNS.getText(), TEXTFIELD_TOKEN.getText());
@@ -91,17 +85,7 @@ public class GUIController
 		OK();
 		
     }
-	
-	public void setStage(Stage SG) 
-	{
-		this.SG=SG;
-	}
-    
-	public Stage getStage()
-	{
-		return this.SG;
-	}
-	
+		
     private void CalculateToken()
     {
 		String Login =TEXTFIELD_USERNAME.getText();
@@ -198,23 +182,5 @@ public class GUIController
 		}	
     }
 
-	public void clear() 
-	{
-		Error();
-		TEXTFIELD_IPORDNS.setText("");
-		TEXTFIELD_INSTANCENAME.setText("");
-		TEXTFIELD_USERNAME.setText("");
-		TEXTFIELD_PASSWORD.setText("");
-		TEXTFIELD_TOKEN.setText("");
-		TEXTFIELD_VERSION.setText("");
-	}
-
-	public void setData(ConnectionData CD) 
-	{
-		TEXTFIELD_IPORDNS.setText(CD.getIPorDNS());
-		TEXTFIELD_INSTANCENAME.setText(CD.getInstanceName());
-		TEXTFIELD_TOKEN.setText(CD.getToken());
-		TEST_CONNECTION_ACTION(null);
-	}
 		
 }
