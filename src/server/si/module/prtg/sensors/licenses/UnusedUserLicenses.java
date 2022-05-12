@@ -1,8 +1,9 @@
 package si.module.prtg.sensors.licenses;
 
-import java.lang.reflect.Method;
-
+import de.starface.bo.UserBusinessObject;
 import de.starface.core.component.StarfaceComponentProvider;
+import de.starface.license.manager.LicenseComponent;
+import de.starface.license.manager.LicenseComponent.Features;
 import de.vertico.starface.config.server.forms.LicenseInfoForm;
 import de.vertico.starface.module.core.model.VariableType;
 import de.vertico.starface.module.core.model.Visibility;
@@ -10,6 +11,8 @@ import de.vertico.starface.module.core.runtime.IBaseExecutable;
 import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.OutputVar;
+import de.vertico.starface.persistence.databean.core.ExtendedUserData;
+import de.vertico.starface.persistence.databean.core.Permission;
 
 @Function(visibility=Visibility.Private, rookieFunction=false, description="Returns the amount of currently unused licenses")
 public class UnusedUserLicenses implements IBaseExecutable 
@@ -25,6 +28,9 @@ public class UnusedUserLicenses implements IBaseExecutable
 	@OutputVar(label="Unused UCC Light Licenses", description="",type=VariableType.NUMBER)
 	public  Integer UnusedLightLicenses=0;
 	
+	@OutputVar(label="Unused TS Licenses", description="",type=VariableType.NUMBER)
+	public  Integer UnusedTSLicenses=0;
+	
     StarfaceComponentProvider componentProvider = StarfaceComponentProvider.getInstance(); 
     //##########################################################################################
 	
@@ -34,20 +40,25 @@ public class UnusedUserLicenses implements IBaseExecutable
 	{
 		
 		LicenseInfoForm LIF = new LicenseInfoForm(StarfaceComponentProvider.getInstance());
-				
+		LicenseComponent LC = (LicenseComponent)StarfaceComponentProvider.getInstance().fetch(LicenseComponent.class);		
+		
 		UnusedLicenses = LIF.getAvailableUsers();
 		UnusedUCCLicenses  = LIF.getAvailableUcc();
+		UnusedLightLicenses = LIF.getAvailableLightUsers();
+
+		UserBusinessObject UBO = (UserBusinessObject)StarfaceComponentProvider.getInstance().fetch(UserBusinessObject.class);	
 		
-		for(Method M : LicenseInfoForm.class.getDeclaredMethods()) //Check if Method exists. 
+		Integer UsedTerminalserverLicenses=0;
+		for(ExtendedUserData EUD : UBO.getUsers())
 		{
-			if(M.getName().contentEquals("getAvailableLightUsers"))
+			if(EUD.getPermissions().contains(Permission.WINCLIENT_TERMINAL_SERVER))
 			{
-				UnusedLightLicenses = LIF.getAvailableLightUsers();
-				break;
+				UsedTerminalserverLicenses++;
 			}
 		}
 		
-		
+		Integer TotalTerminalserverLicenses = LC.getLicensedUsersOfFeature(Features.WINCLIENT_TERMINAL_SERVER);
+		UnusedTSLicenses = TotalTerminalserverLicenses-UsedTerminalserverLicenses;
 	
 	}//END OF EXECUTION
 
