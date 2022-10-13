@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Logger;
 
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.module.core.model.VariableType;
@@ -43,7 +43,7 @@ public class GetXMLRPCData implements IBaseExecutable
 	public void execute(IRuntimeEnvironment context) throws Exception 
 	{
 		StorageManager SM = (StorageManager)context.provider().fetch(StorageManager.class);
-		Log log = context.getLog();
+		Logger log = context.getLog();
 		
 		if(!SM.isRunning())
 		{

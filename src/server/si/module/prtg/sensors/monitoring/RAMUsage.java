@@ -1,8 +1,5 @@
 package si.module.prtg.sensors.monitoring;
 
-import org.hyperic.sigar.Mem;
-import org.hyperic.sigar.Sigar;
-
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.module.core.model.VariableType;
 import de.vertico.starface.module.core.model.Visibility;
@@ -10,6 +7,8 @@ import de.vertico.starface.module.core.runtime.IBaseExecutable;
 import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.OutputVar;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.platform.linux.LinuxHardwareAbstractionLayer;
 
 @Function(visibility=Visibility.Private, rookieFunction=false, description="Returns Current RAM Usage")
 public class RAMUsage implements IBaseExecutable 
@@ -17,10 +16,10 @@ public class RAMUsage implements IBaseExecutable
 	//##########################################################################################
 
 	@OutputVar(label="Usage[MB]", description="",type=VariableType.NUMBER)
-	public Integer UsageMB=0;
+	public Long UsageMB=0L;
 	
 	@OutputVar(label="Free[MB]", description="",type=VariableType.NUMBER)
-	public Integer FreeMB=0;
+	public Long FreeMB=0L;
 	
 	@OutputVar(label="Usage[%]", description="",type=VariableType.NUMBER)
 	public Integer UsagePercent=0;
@@ -34,21 +33,22 @@ public class RAMUsage implements IBaseExecutable
 	//###################			Code Execution			############################	
 	@Override
 	public void execute(IRuntimeEnvironment context) throws Exception 
-	{			
-		Sigar S = new Sigar();
-				
-		Mem M = S.getMem();
+	{		
+		LinuxHardwareAbstractionLayer LHAL = new LinuxHardwareAbstractionLayer();
+		GlobalMemory GM = LHAL.createMemory();
 		
-		UsageMB = (int) M.getActualUsed();
-		UsageMB = UsageMB / 1024;
-		UsageMB = UsageMB / 1024;
-		FreeMB = (int) M.getActualFree();
-		FreeMB = FreeMB / 1024;
-		FreeMB = FreeMB / 1024;
+		Long Total = GM.getTotal();
+		Long Available = GM.getAvailable();
+		Long Used = Total -Available;
 		
-		UsagePercent = (int) M.getUsedPercent();
+		UsageMB = (Used /1024)/1024;
+		FreeMB = (Available /1024)/1024;
+		
+		Float Percentage = 100F/Total;
+		Float FUsagePercent = Used * Percentage;
+		UsagePercent = FUsagePercent.intValue();
 		FreePercent = 100-UsagePercent;
-		
+				
 	}//END OF EXECUTION
 
 	

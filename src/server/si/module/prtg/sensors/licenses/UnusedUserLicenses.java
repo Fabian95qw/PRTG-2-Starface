@@ -48,17 +48,17 @@ public class UnusedUserLicenses implements IBaseExecutable
 
 		UserBusinessObject UBO = (UserBusinessObject)StarfaceComponentProvider.getInstance().fetch(UserBusinessObject.class);	
 		
-		Integer UsedTerminalserverLicenses=0;
-		for(ExtendedUserData EUD : UBO.getUsers())
+		Integer UsedTerminalserverLicenses=0; //Counter for Users with TS Lcence
+		for(ExtendedUserData EUD : UBO.getUsers()) //Get all Users
 		{
-			if(EUD.getPermissions().contains(Permission.WINCLIENT_TERMINAL_SERVER))
+			if(EUD.getPermissions().contains(Permission.WINCLIENT_TERMINAL_SERVER))//If User has Permission for TS Server 
 			{
-				UsedTerminalserverLicenses++;
+				UsedTerminalserverLicenses=UsedTerminalserverLicenses+1; //Add 1 to Counter
 			}
 		}
 		
-		Integer TotalTerminalserverLicenses = LC.getLicensedUsersOfFeature(Features.WINCLIENT_TERMINAL_SERVER);
-		UnusedTSLicenses = TotalTerminalserverLicenses-UsedTerminalserverLicenses;
+		Integer TotalTerminalserverLicenses = LC.getLicensedUsersOfFeature(Features.WINCLIENT_TERMINAL_SERVER); //Get Total amount of TS Licenses based on the Feature
+		UnusedTSLicenses = TotalTerminalserverLicenses-UsedTerminalserverLicenses; // Calculate the Total of Unused licenses
 	
 	}//END OF EXECUTION
 

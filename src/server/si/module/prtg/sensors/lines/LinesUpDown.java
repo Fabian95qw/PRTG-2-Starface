@@ -2,7 +2,7 @@ package si.module.prtg.sensors.lines;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Logger;
 
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.config.wire.forms.WireUnitBean;
@@ -34,7 +34,7 @@ public class LinesUpDown implements IBaseExecutable
 	{
 		//CallActions CA = (CallActions)context.provider().fetch(CallActions.class);
 
-		Log log = context.getLog();
+		Logger log = context.getLog();
 		WireSettingsHandler WSH = (WireSettingsHandler)context.provider().fetch(WireSettingsHandler.class);
 		
 		Collection<WireUnitBean> Lines = WSH.getProviderConnections();
@@ -42,7 +42,7 @@ public class LinesUpDown implements IBaseExecutable
 		for(WireUnitBean Line: Lines)
 		{
 			log.debug("Line: " +Line.getWireName() +" ==> " +Line.getConnectionState());
-
+		
 			if(Line.getConnectionState().equals("on"))
 			{
 				LinesUp++;

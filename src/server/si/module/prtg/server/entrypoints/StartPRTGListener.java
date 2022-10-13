@@ -1,6 +1,6 @@
 package si.module.prtg.server.entrypoints;
 
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Logger;
 
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.module.core.model.Visibility;
@@ -22,7 +22,7 @@ public class StartPRTGListener implements IBaseExecutable
 	@Override
 	public void execute(IRuntimeEnvironment context) throws Exception 
 	{
-		Log log = context.getLog();
+		Logger log = context.getLog();
 		
 		//Checking if there is already a Connection Listener existing, and still active
 		

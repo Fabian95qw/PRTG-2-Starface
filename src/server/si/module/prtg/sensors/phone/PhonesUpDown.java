@@ -1,6 +1,6 @@
 package si.module.prtg.sensors.phone;
 
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Logger;
 
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.config.phone.forms.PhoneListBean;
@@ -32,7 +32,7 @@ public class PhonesUpDown implements IBaseExecutable
 	{		
 		SipAndPhonesHandler SAP = (SipAndPhonesHandler)context.provider().fetch(SipAndPhonesHandler.class);
 
-		Log log = context.getLog();
+		Logger log = context.getLog();
 		
 		//asterisk -rx "sip show peers" | grep "D" | grep "0        " | grep 1002.ylnkt22 | wc -l
 

@@ -3,7 +3,7 @@ package si.module.prtg.server.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Logger;
 
 import de.starface.core.component.StarfaceComponent;
 import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
@@ -12,7 +12,7 @@ import si.module.prtg.server.sensor.Sensor;
 public class StorageManager extends StarfaceComponent
 {
 	private static List<Sensor> Sensorlist=null;
-	private static Log Sublog = null; //Log is inherited from StarfaceComponent, in order to not Override it, use a different variablename
+	private static Logger Sublog = null; //Log is inherited from StarfaceComponent, in order to not Override it, use a different variablename
 	private static boolean isRunning = false;
 	
 	@Override

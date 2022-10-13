@@ -1,6 +1,6 @@
 package si.module.prtg.server.entrypoints;
 
-import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Logger;
 
 import de.starface.core.component.StarfaceComponentProvider;
 import de.vertico.starface.module.core.model.Visibility;
@@ -21,7 +21,7 @@ public class StopPRTGListener implements IBaseExecutable
 	@Override
 	public void execute(IRuntimeEnvironment context) throws Exception 
 	{
-		Log log = context.getLog();
+		Logger log = context.getLog();
 				
 		StorageManager SM = (StorageManager)context.provider().fetch(StorageManager.class);
 		
