@@ -24,6 +24,7 @@
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -38,15 +39,16 @@
          <children>
             <TextField fx:id="TEXTFIELD_IPORDNS" GridPane.columnIndex="1" />
             <CheckBox fx:id="CHECKBOX_USE_SSL" mnemonicParsing="false" text="SSL Verwenden" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="TEXTFIELD_INSTANCENAME" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="TEXTFIELD_USERNAME" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <PasswordField fx:id="TEXTFIELD_PASSWORD" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="TEXTFIELD_SENSORNAME" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzerpasswort" GridPane.rowIndex="4" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzername" GridPane.rowIndex="3" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PRTG Kern Instanzname" GridPane.rowIndex="2" />
+            <TextField fx:id="TEXTFIELD_PORT" text="80" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="TEXTFIELD_INSTANCENAME" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="TEXTFIELD_USERNAME" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <PasswordField fx:id="TEXTFIELD_PASSWORD" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="TEXTFIELD_SENSORNAME" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzerpasswort" GridPane.rowIndex="5" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzername" GridPane.rowIndex="4" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PRTG Kern Instanzname" GridPane.rowIndex="3" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Server IP/DNS" />
-            <HBox GridPane.rowIndex="11">
+            <HBox GridPane.rowIndex="12">
                <children>
                   <Button mnemonicParsing="false" onAction="#TEST_CONNECTION_ACTION" text="Testen">
                      <graphic>
@@ -58,22 +60,23 @@
                   </Button>
                </children>
             </HBox>
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="11">
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="12">
                <children>
                   <Button mnemonicParsing="false" onAction="#COPY_SENSORSTRING_ACTION" text="Sensorstring Kopieren" />
                </children></HBox>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Token" GridPane.rowIndex="7" />
-            <TextField fx:id="TEXTFIELD_TOKEN" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <Separator GridPane.rowIndex="6" />
-            <Separator GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modul-Version" GridPane.rowIndex="8" />
-            <TextField fx:id="TEXTFIELD_VERSION" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SF-Version" GridPane.rowIndex="9" />
-            <TextField fx:id="TEXTFIELD_SFVERSION" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sensorstring" GridPane.rowIndex="10" />
-            <TextField fx:id="TEXTFIELD_SENSORSTRING" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sensorname" GridPane.rowIndex="5" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Token" GridPane.rowIndex="8" />
+            <TextField fx:id="TEXTFIELD_TOKEN" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Separator GridPane.rowIndex="7" />
+            <Separator GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modul-Version" GridPane.rowIndex="9" />
+            <TextField fx:id="TEXTFIELD_VERSION" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SF-Version" GridPane.rowIndex="10" />
+            <TextField fx:id="TEXTFIELD_SFVERSION" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sensorstring" GridPane.rowIndex="11" />
+            <TextField fx:id="TEXTFIELD_SENSORSTRING" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sensorname" GridPane.rowIndex="6" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SSL" GridPane.rowIndex="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Port" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </children>

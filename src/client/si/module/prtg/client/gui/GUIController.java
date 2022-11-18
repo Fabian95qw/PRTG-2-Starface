@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -38,6 +40,7 @@ public class GUIController
 	@FXML TextField TEXTFIELD_SENSORSTRING;
 	@FXML TextField TEXTFIELD_SENSORNAME;
 	@FXML CheckBox CHECKBOX_USE_SSL;
+	@FXML TextField TEXTFIELD_PORT;
 
 	public GUIController()
 	{}
@@ -48,6 +51,40 @@ public class GUIController
 		log = new Log(this.getClass());
 		log.debug("Initialized AddServerFormController");
 		Error();
+		Listeners();
+	}
+	
+	private void Listeners()
+	{
+		
+		
+		CHECKBOX_USE_SSL.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldval , Boolean newval) 
+			{
+				if(newval)
+				{
+					TEXTFIELD_PORT.setText("443");
+				}
+				else
+				{
+					TEXTFIELD_PORT.setText("80");
+				}
+					
+			}
+		});
+		
+		
+		TEXTFIELD_PORT.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(ObservableValue<? extends String> observable, String oldValue, 
+		        String newValue) {
+		        if (!newValue.matches("\\d*")) {
+		        	TEXTFIELD_PORT.setText(newValue.replaceAll("[^\\d]", ""));
+		        }
+		    }
+		});
 	}
 	
     @FXML
@@ -67,7 +104,8 @@ public class GUIController
     	
 		try 
 		{
-			XmlRpcConnector XPC = new XmlRpcConnector(TEXTFIELD_INSTANCENAME.getText(), TEXTFIELD_IPORDNS.getText(), TEXTFIELD_TOKEN.getText(), CHECKBOX_USE_SSL.isSelected());
+			String Host = TEXTFIELD_IPORDNS.getText()+":"+TEXTFIELD_PORT.getText();
+			XmlRpcConnector XPC = new XmlRpcConnector(TEXTFIELD_INSTANCENAME.getText(), Host, TEXTFIELD_TOKEN.getText(), CHECKBOX_USE_SSL.isSelected());
 			Version VC = new Version();
 			XPC.execute(VC);
 			log.debug(VC.Result().Data().get("Version").toString());
@@ -75,7 +113,7 @@ public class GUIController
 			TEXTFIELD_SFVERSION.setText(VC.Result().Data().get("SFVersion").toString());
 			StringBuilder SB = new StringBuilder();
 			
-			SB.append("-h %host -t " +TEXTFIELD_TOKEN.getText()+" -s " +TEXTFIELD_SENSORNAME.getText() +" -i "+ TEXTFIELD_INSTANCENAME.getText() +" -ssl "+ CHECKBOX_USE_SSL.isSelected() + " -d false");
+			SB.append("-h %host -t " +TEXTFIELD_TOKEN.getText()+" -p "+ TEXTFIELD_PORT.getText() +" -s " +TEXTFIELD_SENSORNAME.getText() +" -i "+ TEXTFIELD_INSTANCENAME.getText() +" -ssl "+ CHECKBOX_USE_SSL.isSelected() + " -d false");
 			TEXTFIELD_SENSORSTRING.setText(SB.toString());
 			
 		} 

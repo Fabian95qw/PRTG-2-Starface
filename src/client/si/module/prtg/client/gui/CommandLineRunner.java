@@ -46,6 +46,10 @@ public class CommandLineRunner
 		O = new Option("d","debug", true, "Disable Debugging");
 		O.setRequired(true);
 		Opt.addOption(O);
+		O = new Option("p","port", true, "Use custom Port");
+		O.setRequired(false);
+		Opt.addOption(O);
+		
 		}
 		
 		/*
@@ -106,10 +110,23 @@ public class CommandLineRunner
 		String Instancename = CMD.getOptionValue("i");
 		String SUseSSL = CMD.getOptionValue("ssl");
 		boolean UseSSL = Boolean.valueOf(SUseSSL);
+		Integer Port = -1;
+		try
+		{
+			String SPort = CMD.getOptionValue("p");
+			Port = Integer.parseInt(SPort);
+			Host=Host+":"+Port;
+		}
+		catch(Exception e)
+		{
+			log.debug(e.getMessage());
+		}
 		
 		log.debug("Host: " + Host);
+		log.debug("Port: "+ Port);
 		log.debug("Token:" + Token);
 		log.debug("Sensorname:"+  Sensorname);		
+		
 		
 		try
 		{

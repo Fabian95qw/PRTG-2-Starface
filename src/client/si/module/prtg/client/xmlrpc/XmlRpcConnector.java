@@ -28,7 +28,7 @@ public class XmlRpcConnector
 	private XmlRpcClient XPC = null;
 	private XmlRpcClientConfigImpl Config  = null;
 	private Log log = null;
-	
+
 	public XmlRpcConnector(String Instancename, String IPorDNS, String Token, boolean UseSSL) throws MalformedURLException
 	{
 		log=new Log(this.getClass());
