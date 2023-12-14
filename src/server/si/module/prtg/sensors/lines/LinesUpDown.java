@@ -12,6 +12,7 @@ import de.vertico.starface.module.core.runtime.IBaseExecutable;
 import de.vertico.starface.module.core.runtime.IRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.OutputVar;
+import de.vertico.starface.module.core.runtime.functions.system.Execute4;
 import de.vertico.starface.persistence.connector.WireSettingsHandler;
 
 @Function(visibility=Visibility.Private, rookieFunction=false, description="Returns the Amount of Lines currently Online, and Offline")
@@ -49,11 +50,51 @@ public class LinesUpDown implements IBaseExecutable
 			}
 			else
 			{
-				LinesDown++;
+				log.debug("Manual SIP Check for: "+Line.getProviderBean().getHost() +" "+ Line.getProviderBean().getUserName());
+				if(ManualSIPOnlineCheck(context, Line.getProviderBean().getHost(), Line.getProviderBean().getUserName()) || ManualSIPOnlineCheck(context, Line.getProviderBean().getUserName()+":", Line.getProviderBean().getUserName()))
+				{
+					LinesUp++;
+				}
+				else
+				{
+					LinesDown++;
+				}
 			}
 		}
 				
 	}//END OF EXECUTION
 
+	
+	//Workaround for STARFACE 8.BUG
+	private Boolean ManualSIPOnlineCheck(IRuntimeEnvironment context, String Host, String Username)
+	{
+		Logger log = context.getLog();
+		Execute4 E = new Execute4();
+		E.executeAs="Asterisk CLI Command";
+		E.command="sip show registry fullusername";
+		E.bufferSize=Integer.MAX_VALUE;
+		try
+		{
+			E.execute(context);
+		}
+		catch (Exception e)
+		{
+			log.error(e.getMessage());
+			return false;
+		}
+		
+		String[] Lines = E.output.split(System.lineSeparator());
+		
+		for(String Line : Lines)
+		{
+			log.debug(Line+ " -> " + Host +" " + Username);
+			if(Line.contains(Host) && Line.contains(Username) && Line.contains("Registered"))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 }
