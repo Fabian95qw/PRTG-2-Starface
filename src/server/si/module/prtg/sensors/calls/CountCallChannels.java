@@ -22,58 +22,66 @@ import de.vertico.starface.module.core.runtime.IAGIRuntimeEnvironment;
 import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.OutputVar;
 import de.vertico.starface.persistence.connector.WireSettingsHandler;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Function(visibility=Visibility.Private, rookieFunction=false, description="")
-public class CountCallChannels implements IAGIJavaExecutable 
+@Function(visibility = Visibility.Private, rookieFunction = false, description = "")
+public class CountCallChannels implements IAGIJavaExecutable
 {
-	//##########################################################################################
-	
-	@OutputVar(label="Total", description="",type=VariableType.NUMBER)
-	public Integer Total=0;
-	
-	@OutputVar(label="TotalIntern", description="",type=VariableType.NUMBER)
-	public Integer TotalIntern=0;
-	
-	@OutputVar(label="TotalExtern", description="",type=VariableType.NUMBER)
-	public Integer TotalExtern=0;
-	
-	@OutputVar(label="TotalPerLine", description="",type=VariableType.MAP)
+	// ##########################################################################################
+
+	@OutputVar(label = "Total", description = "", type = VariableType.NUMBER)
+	public Integer Total = 0;
+
+	@OutputVar(label = "TotalIntern", description = "", type = VariableType.NUMBER)
+	public Integer TotalIntern = 0;
+
+	@OutputVar(label = "TotalExtern", description = "", type = VariableType.NUMBER)
+	public Integer TotalExtern = 0;
+
+	@OutputVar(label = "TotalPerLine", description = "", type = VariableType.MAP)
 	public Map<String, Integer> TotalPerLine = new HashMap<String, Integer>();
-	
-	
-    StarfaceComponentProvider componentProvider = StarfaceComponentProvider.getInstance(); 
-    //##########################################################################################
-	
-	//###################			Code Execution			############################	
+
+	StarfaceComponentProvider componentProvider = StarfaceComponentProvider.getInstance();
+	// ##########################################################################################
+
+	// ################### Code Execution ############################
 	@Override
-	public void execute(IAGIRuntimeEnvironment context) throws Exception 
+	public void execute(IAGIRuntimeEnvironment context) throws Exception
 	{
 		Logger log = context.getLog();
 
-		ModuleBusinessObject MBO = (ModuleBusinessObject)context.provider().fetch(ModuleBusinessObject.class);
-		
+		ModuleBusinessObject MBO = (ModuleBusinessObject) context.provider().fetch(ModuleBusinessObject.class);
+
 		WireSettingsHandler WSH = (WireSettingsHandler) context.provider().fetch(WireSettingsHandler.class);
 
 		Collection<WireUnitBean> Lines = WSH.getProviderConnections();
 
+		Map<String, String> NameMapping = new HashMap<String, String>();
+
 		for (WireUnitBean Line : Lines)
 		{
 			TotalPerLine.put(Line.getWireName(), 0);
+			NameMapping.put(Line.getProviderBean().getUserName(), Line.getWireName());
 		}
-		
+
 		PojoCall C = null;
-		
+
 		Callhandling CH = context.provider().fetch(Callhandling.class);
-		
+
 		AsteriskModelApi AMA = CH.getAsteriskModelApi();
+
 		List<UUID> IgnoreCallIDs = new ArrayList<UUID>();
-				
-		for(String S : AMA.getAllChannelNames())
+
+		for (String S : AMA.getAllChannelNames())
 		{
-				C = MBO.getPojoCallByChannelName(S);	
-				if(IgnoreCallIDs.contains(C.getCallId()))
+			try
+			{
+				C = MBO.getPojoCallByChannelName(S);
+				if (IgnoreCallIDs.contains(C.getCallId()))
 				{
 					continue;
 				}
@@ -81,43 +89,77 @@ public class CountCallChannels implements IAGIJavaExecutable
 				{
 					IgnoreCallIDs.add(C.getCallId());
 				}
-				
-				for(PojoCallLeg PCL : C.getAllCallLegs())
+
+				for (PojoCallLeg PCL : C.getAllCallLegs())
 				{
 					log.debug("###########################");
 					log.debug(PCL.toString());
-					if(PCL.getCallLegState().equals(CallLegState.LINKED))
+					if (PCL.getAccountId() > 0)
 					{
-						if(PCL.getLineId() == 0)
+						log.debug("Internal Call");
+						TotalIntern = TotalIntern + 1;
+					}
+					else
+					{
+						log.debug("Checking if External..");
+						switch (PCL.getPeerType())
 						{
-							TotalIntern=TotalIntern+1;
-						}
-						else
-						{
-							TotalExtern = TotalExtern+1;
-							String LineName="Unbekannt";
-							if(PCL.getLineName() != null)
+						case FAX:
+						case FMC:
+						case LOCALPHONE:
+						case PHONE:
+						case PROXY_PHONE:
+							TotalIntern = TotalIntern + 1;
+							log.debug("Internal Call");
+							break;
+						case UNKNOWN:
+							log.debug("External Call");
+							TotalExtern = TotalExtern + 1;
+							String LineName = "Unbekannt";
+
+							try
 							{
-								LineName = PCL.getLineName();
+								String[] Pieces = PCL.getPeerName().split("/");
+								if (NameMapping.get(Pieces[1]) != null)
+								{
+									LineName = NameMapping.get(Pieces[1]);
+								}
 							}
-							if(TotalPerLine.containsKey(LineName))
+							catch (Exception e)
 							{
-								TotalPerLine.put(LineName, TotalPerLine.get(LineName)+1);
+								EtoStringLog(log, e);
 							}
-							else
+
+							if (TotalPerLine.containsKey(LineName))
 							{
-								TotalPerLine.put(LineName, 1);
+								TotalPerLine.put(LineName, TotalPerLine.get(LineName) + 1);
 							}
+							break;
 						}
 					}
 				}
+			}
+			catch (Exception e)
+			{
+				EtoStringLog(log, e);
+			}
 		}
+
+		Total = TotalIntern + TotalExtern;
 		
-		Total = TotalIntern+TotalExtern;
-	}//END OF EXECUTION
+		log.debug("Total:" + Total);
+		log.debug("TotalExtern:" + TotalExtern);
+		log.debug("TotalIntern:" + TotalIntern);
+		log.debug("Total Leitungen:" +TotalPerLine.toString());
+		
+	}// END OF EXECUTION
 
+	public static void EtoStringLog(Logger log, Exception e)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		log.debug(sw.toString()); //
+	}
 
-
-	
-	
 }
