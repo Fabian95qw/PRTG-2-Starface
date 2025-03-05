@@ -1,5 +1,11 @@
 package si.module.prtg.sensors.iqueue;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.apache.logging.log4j.Logger;
+
+import callhandling.FastAgiHandler;
 import de.starface.core.component.StarfaceComponentProvider;
 import de.starface.integration.uci.java.v30.types.QueueStatistics;
 import de.starface.integration.uci.ucp.adapters.v30.UcpQueueAdapter;
@@ -11,7 +17,7 @@ import de.vertico.starface.module.core.runtime.annotations.Function;
 import de.vertico.starface.module.core.runtime.annotations.InputVar;
 import de.vertico.starface.module.core.runtime.annotations.OutputVar;
 
-@Function(visibility = Visibility.Private, rookieFunction = false, description = "Returns Stats on a Single IQueue")
+@Function(visibility = Visibility.Private, description = "Returns Stats on a Single IQueue")
 public class IQueueStats implements IBaseExecutable
 {
 	// ##########################################################################################
@@ -37,6 +43,9 @@ public class IQueueStats implements IBaseExecutable
 	@OutputVar(label = "FreeAgents", description = "", type = VariableType.NUMBER)
 	public Integer FreeAgents = 0;
 
+	@OutputVar(label = "TotalAgents", description = "", type = VariableType.NUMBER)
+	public Integer TotalAgents = 0;
+
 	StarfaceComponentProvider componentProvider = StarfaceComponentProvider.getInstance();
 	// ##########################################################################################
 
@@ -44,20 +53,33 @@ public class IQueueStats implements IBaseExecutable
 	@Override
 	public void execute(IRuntimeEnvironment context) throws Exception
 	{
+		Logger log = context.getLog();
 		UcpQueueAdapter UQA = context.provider().fetch(UcpQueueAdapter.class);
+		FastAgiHandler FAGI = context.provider().fetch(FastAgiHandler.class);
 
 		QueueStatistics QS = UQA.getQueueStatistics(STARFACE_ACCOUNT);
-		if (QS != null)
+		try
 		{
-			CallersinQueue = QS.getCallersInQueue();
-			MissedCalls = QS.getMissedCalls();
-			UnansweredCalls = QS.getUnansweredCalls();
-			TotalCalls = QS.getTotalCalls();
-			AverageWaitingTime = QS.getAverageWaitingTime();
-			FreeAgents = QS.getFreeAgents();
+			if (QS != null)
+			{
+				CallersinQueue = QS.getCallersInQueue();
+				MissedCalls = QS.getMissedCalls();
+				UnansweredCalls = QS.getUnansweredCalls();
+				TotalCalls = QS.getTotalCalls();
+				AverageWaitingTime = QS.getAverageWaitingTime();
+				FreeAgents = QS.getFreeAgents();
 
+			}
+
+			TotalAgents = FAGI.getAgents4GroupId(STARFACE_ACCOUNT, true, false).size();
 		}
-
+		catch (Exception e)
+		{
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			log.debug(sw.toString()); //
+		}
 	}// END OF EXECUTION
 
 }
