@@ -49,7 +49,10 @@ public class CommandLineRunner
 		O = new Option("p","port", true, "Use custom Port");
 		O.setRequired(false);
 		Opt.addOption(O);
-		
+		O = new Option("v10","usev10", true, "UseV10 Interface");
+		O.setRequired(false);
+		O.setArgs(0);
+		Opt.addOption(O);
 		}
 		
 		/*
@@ -104,12 +107,23 @@ public class CommandLineRunner
 		log.debug("Initialized CommandLineRunner");
 		log.debug("Arguments:");
 		
+		boolean UseV10 = false;
+		
+		if(CMD.hasOption("v10"))
+		{
+			UseV10=true;
+		}
+		
+		
 		String Host = CMD.getOptionValue("h");
-		String Token = CMD.getOptionValue("t");
+		String Token= CMD.getOptionValue("t");
+		
 		String Sensorname = CMD.getOptionValue("s");
 		String Instancename = CMD.getOptionValue("i");
 		String SUseSSL = CMD.getOptionValue("ssl");
 		boolean UseSSL = Boolean.valueOf(SUseSSL);
+	
+
 		Integer Port = -1;
 		try
 		{
@@ -130,7 +144,8 @@ public class CommandLineRunner
 		
 		try
 		{
-			XmlRpcConnector XMLRPC = new XmlRpcConnector(Instancename, Host, Token, UseSSL);
+			XmlRpcConnector XMLRPC = null;
+			XMLRPC = new XmlRpcConnector(Instancename, Host, Token, UseSSL, UseV10);
 			Sensor SC = new Sensor(Sensorname);
 			XMLRPC.execute(SC);
 			

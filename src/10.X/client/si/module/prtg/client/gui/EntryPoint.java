@@ -6,7 +6,8 @@ public class EntryPoint
 	{
 		if(args.length == 0)
 		{
-			Main_App.main(args);
+			CommandLineGenerator CLR = new CommandLineGenerator();
+			CLR.Run();
 		}
 		else
 		{

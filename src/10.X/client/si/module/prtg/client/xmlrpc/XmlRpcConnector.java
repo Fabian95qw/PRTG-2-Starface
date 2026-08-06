@@ -17,7 +17,6 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcTransport;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
-
 import si.module.prtg.client.utility.Log;
 import si.module.prtg.client.utility.MessageLoggingTransport;
 import si.module.prtg.client.xmlrpc.commands.BasicCommand;
@@ -28,10 +27,14 @@ public class XmlRpcConnector
 	private XmlRpcClient XPC = null;
 	private XmlRpcClientConfigImpl Config  = null;
 	private Log log = null;
+	private boolean UseV10=false;
+	private String Token="";
 
-	public XmlRpcConnector(String Instancename, String IPorDNS, String Token, boolean UseSSL) throws MalformedURLException
+	public XmlRpcConnector(String Instancename, String IPorDNS, String Token, boolean UseSSL, boolean UseV10) throws MalformedURLException
 	{
 		log=new Log(this.getClass());
+		this.UseV10=UseV10;
+		this.Token=Token;
 		String Url="";
 		if(UseSSL)
 		{
@@ -46,7 +49,11 @@ public class XmlRpcConnector
 		this.Instancename=Instancename;
 		Config = new XmlRpcClientConfigImpl();
 		
-		Url = Url+"?de.vertico.starface.auth="+Token;
+		if(!UseV10)
+		{
+			Url = Url+"?de.vertico.starface.auth="+Token;
+		}
+		
 		//System.out.println(Url);
 		log.debug(Url);
 
@@ -67,19 +74,29 @@ public class XmlRpcConnector
 				
 		XPC.setConfig(Config);
 	}
+
+		
 		
 	private Result execute(Map<String, Object> Params) throws XmlRpcException
 	{
 		log.debug("Executing Command...");
-		return Result.fromObject(XPC.execute(Instancename+"."+"interface", new Object[] {Params} ));
+		if(UseV10)
+		{
+			Params.put("Password", Token);
+			return Result.fromObject(XPC.execute(Instancename+"."+"interfacev10", new Object[] {Params} ));
+		}
+		else
+		{
+			return Result.fromObject(XPC.execute(Instancename+"."+"interface", new Object[] {Params} ));
+		}
 	}
-	
+		
 	public void execute(BasicCommand BC) throws Exception
-	{
+	{		
 		Map<String, Object> Mapping = BC.getMapping();
 		BC.setResult(this.execute(Mapping));
 	}
-	
+		
 	private void trustEveryone() { 
 	    try { 
 	            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier(){ 
